@@ -8,8 +8,10 @@ def train(trainCl, predictCl, NeuNetwork: networkClass, parameter: parameterClas
         click.echo(click.style("\nData is not separated\n   Return...", fg='red'))
         time.sleep(1)
         return;
-    A = NeuNetwork.forwardPropagation(trainCl)
-    NeuNetwork.backwardPropagation(trainCl, A, 0.01)
+    NeuNetwork.forwardPropagation(trainCl)
+    newW, newB = NeuNetwork.backwardPropagation(trainCl, 0.01)
+    # NeuNetwork.update(newW, newB)
+    
 
 
 
