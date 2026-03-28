@@ -29,9 +29,10 @@ class Network(object):
     def ReLU_deriv(self, Z): #detection neuronne actif sous forme bool
         return Z > 0
 
-    def softmax(self, Z): #softmax a stabiliser, utilite??
-        A = np.exp(Z) / sum(np.exp(Z))
-        return A
+    def softmax(self, Z):
+        Z = Z - np.max(Z, axis=0, keepdims=True)  # stabilité numérique
+        expZ = np.exp(Z)
+        return expZ / np.sum(expZ, axis=0, keepdims=True)
     
     """One Hot Encoding,  encode variable under number"""
 
@@ -57,7 +58,6 @@ class Network(object):
                 A.append(self.softmax(tmpZ))
         self.Z = Z
         self.A = A
-
     """ Si 4 layer:
             A[0] = data input
             A[1] = Premiere Transfo avec ReLU situe en couche Hidden1
@@ -83,18 +83,15 @@ class Network(object):
         dZ = 0
         oneHot_Y = self.oneHot(X.result)
         
-        compareValue = oneHot_Y
         for i in reversed(range(L)):
             A_prev = self.A[i]
             if (i == L - 1):
-                dZ = self.A[L] - compareValue
+                dZ = self.A[L] - oneHot_Y
             else:
-                dA_prev = np.dot(self.weights[i].T, dZ)
-                dZ = dA_prev * self.ReLU_deriv(self.Z[i - 1])
+                dA_prev = np.dot(self.weights[i + 1].T, dZ)
+                dZ = dA_prev * self.ReLU_deriv(self.Z[i])
             dW[i] = (1 / m) * np.dot(dZ, A_prev.T)
             db[i] = (1 / m) * np.sum(dZ, axis=1, keepdims=True);
-            print("tmpB:", db[i])
-            print ("B:", self.biaises[i])
         return dW, db
     
     # m = X.len
@@ -121,29 +118,19 @@ class Network(object):
 
     # return dW, db
 
-
-
-            # Z = self.A[self.nb_layers - 1 - i] - compareValue
-            # tmpW = 1 / len(X.data) * Z.dot(self.nb_layers - 2 - i)
-            # self.weights[self.nb_layers - 2 - i] -= learningRate * tmpW
-            # tmpB = 1 / len(X.data) * np.sum(Z)
-            # print (f"for {self.weights[self.nb_layers - 2 - i]}")
-
-
-        # dZ2 = A - oneHot_Y # Calcule difference entre prediction et verite
-        # dW2 = 1 / m * dZ2.dot(A1.T) # Calcul sur comment ajuster        W2: gradient = erreur * entree
-        # db2 = 1 / m * np.sum(dZ2) #le biais reçoit juste la somme des erreurs.
-        # dZ1 = W2.T.dot(dZ2) * ReLU_deriv(Z1) # propage l’erreur vers l’arrière en appliquant la derivee de ReLU
-        # dW1 = 1 / m * dZ1.dot(X.T) # Meme logique que W2
-        # db1 = 1 / m * np.sum(dZ1) #Somme des erreurs
-        # return dW1, db1, dW2, db2
+    # one_hot_Y = one_hot(Y)
+    # dZ2 = A2 - one_hot_Y
+    # dW2 = 1 / m * dZ2.dot(A1.T)
+    # db2 = 1 / m * np.sum(dZ2)
+    # dZ1 = W2.T.dot(dZ2) * ReLU_deriv(Z1)
+    # dW1 = 1 / m * dZ1.dot(X.T)
+    # db1 = 1 / m * np.sum(dZ1)
+    # return dW1, db1, dW2, db2
 
 
 
-    def update(self, newW, newB):
-        print("before", self.biaises[2])
+    def update(self, dW, db, learningRate):
 
         for i in range(len(self.biaises)):
-            self.biaises[i] = newB[len(self.biaises) - 1 - i]
-            self.weights[i] = newW[len(self.weights) - 1 - i]
-        print("after", self.biaises[2])
+            self.biaises[i] = learningRate * db[i]
+            self.weights[i] = learningRate * dW[i]

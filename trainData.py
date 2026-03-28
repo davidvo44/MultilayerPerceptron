@@ -8,11 +8,14 @@ def train(trainCl, predictCl, NeuNetwork: networkClass, parameter: parameterClas
         click.echo(click.style("\nData is not separated\n   Return...", fg='red'))
         time.sleep(1)
         return;
-    NeuNetwork.forwardPropagation(trainCl)
-    newW, newB = NeuNetwork.backwardPropagation(trainCl, 0.01)
-    # NeuNetwork.update(newW, newB)
+    for i in range (5):
+        NeuNetwork.forwardPropagation(trainCl)
+        dW, db = NeuNetwork.backwardPropagation(trainCl, 0.01)
+        print(f"iteration {i} : {NeuNetwork.biaises}")
+        NeuNetwork.update(dW, db, parameter.learningRate)
     
-
+    # test = [[1,2,3], [2,3,8]]
+    # NeuNetwork.softmax(test)
 
 
 # def gradient_descent(X, Y, alpha, iterations):
