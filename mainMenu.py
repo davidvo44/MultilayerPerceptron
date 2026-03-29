@@ -30,7 +30,7 @@ def menuLayer(dataset):
     for i in range(1, layerSize - 1):
         neuron = click.prompt(f"\nNeuron from Layer {i + 1}", type=int)
         layers.append(neuron)
-    n = 2; #output
+    n = 10; #output
     layers.append(n);
     return layers
 

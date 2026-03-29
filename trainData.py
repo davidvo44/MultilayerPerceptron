@@ -10,6 +10,8 @@ def train(trainCl, predictCl, NeuNetwork: networkClass, parameter: parameterClas
         return;
     with open("houses.csv", 'a') as f:
         f.write(f"Weight Init:\n{NeuNetwork.weights}")
+        f.write(f"\n biais:\n{NeuNetwork.biaises}")
+
     for epochI in range (parameter.epoch):
         print(f"\nfor epoch {epochI}:")
         trainCl.resetEpoch()
@@ -21,7 +23,8 @@ def train(trainCl, predictCl, NeuNetwork: networkClass, parameter: parameterClas
             NeuNetwork.update(dW, db, parameter.learningRate)
     
         with open("houses.csv", 'a') as f:
-            f.write(f"\nfor epoch {epochI}:\n Weight:\n{NeuNetwork.weights}")
+            f.write(f"\n\n\n\nfor epoch {epochI}:\n Weight:\n{NeuNetwork.weights}")
+            f.write(f"\n biais:\n{NeuNetwork.biaises}")
     # test = [[1,2,3], [2,3,8]]
     # NeuNetwork.softmax(test)
 

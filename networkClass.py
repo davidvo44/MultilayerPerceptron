@@ -6,9 +6,9 @@ class Network(object):
     def __init__(self, sizes):
         self.nb_layers = len(sizes)
         self.sizes = sizes
-        self.biaises = [np.random.randn(y, 1) for y in sizes[1:]]
-        self.weights = [np.random.randn(y, x)
-                        for x, y in zip(sizes[:-1], sizes[1:])]
+        self.biaises = [np.zeros((y, 1)) for y in sizes[1:]]
+        self.weights = [np.random.randn(y, x) * np.sqrt(2 / x)
+                    for x, y in zip(sizes[:-1], sizes[1:])]
         self.Z = []
         self.A = []
 
@@ -26,8 +26,11 @@ class Network(object):
     def ReLU(self, Z):
         return np.maximum(Z, 0)
     
-    def ReLU_deriv(self, Z): #detection neuronne actif sous forme bool
-        return Z > 0
+    def LeakyReLU(self, x):
+        return np.where(x > 0, x, 0.01 * x)
+
+    def ReLU_deriv(self, x): #detection neuronne actif sous forme bool
+        return np.where(x > 0, 1, 0.01)
 
     def softmax(self, Z):
         Z = Z - np.max(Z, axis=0, keepdims=True)  # stabilité numérique
@@ -37,7 +40,7 @@ class Network(object):
     """One Hot Encoding,  encode variable under number"""
 
     def oneHot(self, Y):
-        oneHot_Y = np.zeros((Y.size,2))
+        oneHot_Y = np.zeros((Y.size,10))
         oneHot_Y[np.arange(Y.size), Y] = 1
         oneHot_Y = oneHot_Y.T
         return oneHot_Y
@@ -52,10 +55,9 @@ class Network(object):
 
         for i in range(self.nb_layers - 1):
             Z = np.dot(self.weights[i], A) + self.biaises[i]
-            self.Z.append(Z)
 
             if i < self.nb_layers - 2:
-                A = self.ReLU(Z)
+                A = self.LeakyReLU(Z)
             else:
                 A = self.softmax(Z)
 
@@ -95,6 +97,7 @@ class Network(object):
                 dZ = dA_prev * self.ReLU_deriv(self.Z[i])
             dW[i] = (1 / m) * np.dot(dZ, A_prev.T)
             db[i] = (1 / m) * np.sum(dZ, axis=1, keepdims=True);
+        loss = -np.mean(np.sum(oneHot_Y * np.log(self.A[-1] + 1e-8), axis=0))
         return dW, db
     
     # m = X.len
