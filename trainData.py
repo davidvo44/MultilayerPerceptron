@@ -8,8 +8,10 @@ def train(trainCl, predictCl, NeuNetwork: networkClass, parameter: parameterClas
         click.echo(click.style("\nData is not separated\n   Return...", fg='red'))
         time.sleep(1)
         return;
-    for i in range (parameter.epoch):
-        print(f"\nfor epoch {i}:")
+    with open("houses.csv", 'a') as f:
+        f.write(f"Weight Init:\n{NeuNetwork.weights}")
+    for epochI in range (parameter.epoch):
+        print(f"\nfor epoch {epochI}:")
         trainCl.resetEpoch()
         for i in range(0, trainCl.data.shape[1], parameter.batchSize):
             X_batch =  trainCl.data[:, i:i+parameter.batchSize]
@@ -18,6 +20,8 @@ def train(trainCl, predictCl, NeuNetwork: networkClass, parameter: parameterClas
             dW, db = NeuNetwork.backwardPropagation(X_batch, Y_batch, 0.01)
             NeuNetwork.update(dW, db, parameter.learningRate)
     
+        with open("houses.csv", 'a') as f:
+            f.write(f"\nfor epoch {epochI}:\n Weight:\n{NeuNetwork.weights}")
     # test = [[1,2,3], [2,3,8]]
     # NeuNetwork.softmax(test)
 

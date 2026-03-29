@@ -37,7 +37,7 @@ class Network(object):
     """One Hot Encoding,  encode variable under number"""
 
     def oneHot(self, Y):
-        oneHot_Y = np.zeros((Y.size,10))
+        oneHot_Y = np.zeros((Y.size,2))
         oneHot_Y[np.arange(Y.size), Y] = 1
         oneHot_Y = oneHot_Y.T
         return oneHot_Y
@@ -57,7 +57,7 @@ class Network(object):
             if i < self.nb_layers - 2:
                 A = self.ReLU(Z)
             else:
-             A = self.softmax(Z)
+                A = self.softmax(Z)
 
             self.A.append(A)
             self.Z.append(Z)
@@ -87,7 +87,6 @@ class Network(object):
         dZ = 0
         oneHot_Y = self.oneHot(Y)
         for i in reversed(range(L)):
-            print("bias:", self.biaises[i])
             A_prev = self.A[i]
             if (i == L - 1):
                 dZ = self.A[L] - oneHot_Y
@@ -136,6 +135,6 @@ class Network(object):
     def update(self, dW, db, learningRate):
 
         for i in range(len(self.biaises)):
-            self.biaises[i] = learningRate * db[i]
-            self.weights[i] = learningRate * dW[i]
+            self.biaises[i] -= learningRate * db[i]
+            self.weights[i] -= learningRate * dW[i]
 

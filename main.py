@@ -6,6 +6,7 @@ import pandas as pd
 import separateData
 import dataClass
 import trainData
+import predictData
 
 def main():
     print("\nWelcome to Multilayer Perceptron project")
@@ -19,7 +20,7 @@ def main():
     try:
         choice = mainMenu.menuData()
         if choice == "Diagnostic Breast Cancer Data (project)":
-            dataset = "data.csv"
+            dataset = "test.csv"
         else:
             dataset = "train.csv"
         data = pd.read_csv(dataset)
@@ -33,7 +34,7 @@ def main():
             elif choice == "Train program":
                 trainData.train(trainCl, predictCl, neuNetwork, parameter)
             elif choice == "Prediction program":
-                print("prediction!!!")
+                predictData.predict(predictCl,neuNetwork)
             else:
                 return
         # layerSize, layers = mainMenu.menuLayer()

@@ -30,7 +30,7 @@ def menuLayer(dataset):
     for i in range(1, layerSize - 1):
         neuron = click.prompt(f"\nNeuron from Layer {i + 1}", type=int)
         layers.append(neuron)
-    n = 10; #output
+    n = 2; #output
     layers.append(n);
     return layers
 
@@ -47,23 +47,32 @@ def menuParameter(parameter : parameterClass):
         f"Learning Rate Format: {parameter.learningRateFormat}\n" \
         f"Learning Rate : {parameter.learningRate}\n" \
         f"Batch Size : {parameter.batchSize}\n" \
+        f"Epoch : {parameter.epoch}\n" \
         f"Loss Function: {parameter.loss}\n\n"  \
             "Select Parameter",
         
         choices=["Learning Rate Format", "Batch Size", "Epoch", "Loss", "Done"]
     ).execute()
 
+def newParam(param):
+    if param == "Format" or param == "Loss":
+        newChange = click.prompt(f"\nNew data for {param}", type=str)
+    else:
+        newChange = click.prompt(f"\nNew data for {param}", type=int)
+    return newChange
+
+
 def addParameter():
     parameter = parameterClass.Parameter()
     while (1):
         choice = menuParameter(parameter)
         if choice == "Learning Rate Format":
-            print("prediction!!!")
+           parameter.learningRateFormat = newParam("Format")
         elif choice == "Batch Size":
-            print("prediction!!!")
+           parameter.batchSize = newParam("batch")
         elif choice == "Epoch":
-            print("prediction!!!")
+           parameter.epoch = newParam("epoch")
         elif choice == "Loss":
-            print("prediction!!!")
+           parameter.loss = newParam("Loss")
         elif choice == "Done":
             return parameter

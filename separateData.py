@@ -12,6 +12,7 @@ def SeparateData(data: pd):
     Y_predic = data_predic[0]
     X_predic = data_predic[1:lenFeat]
     X_predic = X_predic / 255
+    X_predic = X_predic - 0.5
     # """normalisation /255 si data : MNIST"""
 
 
@@ -20,6 +21,7 @@ def SeparateData(data: pd):
     Y_train = data_train[0]
     X_train = data_train[1:lenFeat]
     X_train = X_train / 255
+    X_train = X_train - 0.5
     _,m_train = X_train.shape
 
 
