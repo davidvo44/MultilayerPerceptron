@@ -8,11 +8,15 @@ def train(trainCl, predictCl, NeuNetwork: networkClass, parameter: parameterClas
         click.echo(click.style("\nData is not separated\n   Return...", fg='red'))
         time.sleep(1)
         return;
-    for i in range (5):
-        NeuNetwork.forwardPropagation(trainCl)
-        dW, db = NeuNetwork.backwardPropagation(trainCl, 0.01)
-        print(f"iteration {i} : {NeuNetwork.biaises}")
-        NeuNetwork.update(dW, db, parameter.learningRate)
+    for i in range (parameter.epoch):
+        print(f"\nfor epoch {i}:")
+        trainCl.resetEpoch()
+        for i in range(0, trainCl.data.shape[1], parameter.batchSize):
+            X_batch =  trainCl.data[:, i:i+parameter.batchSize]
+            Y_batch = trainCl.result[i:i+parameter.batchSize]
+            NeuNetwork.forwardPropagation(X_batch)
+            dW, db = NeuNetwork.backwardPropagation(X_batch, Y_batch, 0.01)
+            NeuNetwork.update(dW, db, parameter.learningRate)
     
     # test = [[1,2,3], [2,3,8]]
     # NeuNetwork.softmax(test)

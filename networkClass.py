@@ -37,27 +37,31 @@ class Network(object):
     """One Hot Encoding,  encode variable under number"""
 
     def oneHot(self, Y):
-        oneHot_Y = np.zeros((Y.size, Y.max() + 1))
+        oneHot_Y = np.zeros((Y.size,10))
         oneHot_Y[np.arange(Y.size), Y] = 1
         oneHot_Y = oneHot_Y.T
         return oneHot_Y
 
 
     """Need stock A in each layer to backpropagation"""
-    def forwardPropagation(self, X: dataClass. Data):
-        A = []
-        Z = []
-        A.append(X.data)
+    def forwardPropagation(self, A):
+        self.A = []
+        self.Z = []
 
-        for i in range (self.nb_layers - 1):
-            tmpZ = np.dot(self.weights[i], A[i]) + self.biaises[i]
-            Z.append(tmpZ)
-            if i < (self.nb_layers - 2):
-                A.append(self.ReLU(tmpZ))
+        self.A.append(A)
+
+        for i in range(self.nb_layers - 1):
+            Z = np.dot(self.weights[i], A) + self.biaises[i]
+            self.Z.append(Z)
+
+            if i < self.nb_layers - 2:
+                A = self.ReLU(Z)
             else:
-                A.append(self.softmax(tmpZ))
-        self.Z = Z
-        self.A = A
+             A = self.softmax(Z)
+
+            self.A.append(A)
+            self.Z.append(Z)
+
     """ Si 4 layer:
             A[0] = data input
             A[1] = Premiere Transfo avec ReLU situe en couche Hidden1
@@ -75,15 +79,15 @@ class Network(object):
 
     """
 
-    def backwardPropagation(self, X: dataClass.Data, learningRate):
-        m = X.len
+    def backwardPropagation(self, X, Y, learningRate):
+        m = X.shape[1]
         L = self.nb_layers - 1
         dW = [0] * (L)
         db = [0] * (L)
         dZ = 0
-        oneHot_Y = self.oneHot(X.result)
-        
+        oneHot_Y = self.oneHot(Y)
         for i in reversed(range(L)):
+            print("bias:", self.biaises[i])
             A_prev = self.A[i]
             if (i == L - 1):
                 dZ = self.A[L] - oneHot_Y
@@ -134,3 +138,4 @@ class Network(object):
         for i in range(len(self.biaises)):
             self.biaises[i] = learningRate * db[i]
             self.weights[i] = learningRate * dW[i]
+

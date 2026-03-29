@@ -24,6 +24,7 @@ def SeparateData(data: pd):
 
 
     predictCl = dataClass.Data(lenData / 2, X_predic, Y_predic)
+    
     trainCl = dataClass.Data(m_train, X_train, Y_train)
 
 

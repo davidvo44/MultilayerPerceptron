@@ -29,7 +29,7 @@ def main():
         while (1):
             choice = mainMenu.programChoice()
             if choice == "Separate the dataset":
-                trainCl, predictCl = separateData.SeparateData(data)
+                predictCl, trainCl = separateData.SeparateData(data)
             elif choice == "Train program":
                 trainData.train(trainCl, predictCl, neuNetwork, parameter)
             elif choice == "Prediction program":
