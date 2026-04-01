@@ -2,16 +2,25 @@ import click
 import time
 import networkClass
 import parameterClass
+import numpy as np
 
 def train(trainCl, predictCl, NeuNetwork: networkClass, parameter: parameterClass):
+    epoch_loss = 0
+    num_batches = 0
+    best_loss = float("inf")
+    patience = 10
+    counter = 0
+    min_delta = 1e-3
+
     if trainCl == None or predictCl == None:
         click.echo(click.style("\nData is not separated\n   Return...", fg='red'))
         time.sleep(1)
         return;
+
     with open("houses.csv", 'a') as f:
         f.write(f"Weight Init:\n{NeuNetwork.weights}")
         f.write(f"\n biais:\n{NeuNetwork.biaises}")
-
+    
     for epochI in range (parameter.epoch):
         print(f"\nfor epoch {epochI}:")
         trainCl.resetEpoch()
@@ -19,24 +28,31 @@ def train(trainCl, predictCl, NeuNetwork: networkClass, parameter: parameterClas
             X_batch =  trainCl.data[:, i:i+parameter.batchSize]
             Y_batch = trainCl.result[i:i+parameter.batchSize]
             NeuNetwork.forwardPropagation(X_batch)
-            dW, db = NeuNetwork.backwardPropagation(X_batch, Y_batch, 0.01)
+            dW, db = NeuNetwork.backwardPropagation(X_batch, Y_batch)
             NeuNetwork.update(dW, db, parameter.learningRate)
-    
+            oneHot_Y = NeuNetwork.oneHot(Y_batch)
+            batch_loss = -np.mean(np.sum(oneHot_Y * np.log(NeuNetwork.A[-1] + 1e-8), axis=0))
+            epoch_loss += batch_loss
+            num_batches += 1
+        loss = epoch_loss / num_batches
+        print(f"Loss is {loss}")
+        if parameter.earlyStop == True:
+            if best_loss - loss > min_delta:
+                best_loss = loss
+                counter = 0
+            else:
+                counter +=1
+            if counter >= patience:
+                print(f"Early stopping at epoch {epochI}")
+                break
+        NeuNetwork.forwardPropagation(trainCl.data)
+        pred = np.argmax(NeuNetwork.A[-1], axis=0)
+        accuracy = np.mean(pred ==  trainCl.result)
+        print(f"Accuracy: {accuracy}")
+        parameter.learningRate *= 0.99
         with open("houses.csv", 'a') as f:
             f.write(f"\n\n\n\nfor epoch {epochI}:\n Weight:\n{NeuNetwork.weights}")
             f.write(f"\n biais:\n{NeuNetwork.biaises}")
     # test = [[1,2,3], [2,3,8]]
     # NeuNetwork.softmax(test)
 
-
-# def gradient_descent(X, Y, alpha, iterations):
-# W1, b1, W2, b2 = init_params()
-# for i in range(iterations):
-#     Z1, A1, Z2, A2 = forward_prop(W1, b1, W2, b2, X)
-#     dW1, db1, dW2, db2 = backward_prop(Z1, A1, Z2, A2, W1, W2, X, Y)
-#     W1, b1, W2, b2 = update_params(W1, b1, W2, b2, dW1, db1, dW2, db2, alpha)
-#     # if i % 10 == 0:
-#     #     print("Iteration: ", i)
-#     #     predictions = get_predictions(A2)
-#     #     print(get_accuracy(predictions, Y))
-# return W1, b1, W2, b2

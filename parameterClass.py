@@ -6,6 +6,7 @@ class Parameter:
         self.batchSize = 20
         self.epoch  = 500
         self.loss = "categorical Crossentropy"
+        self.earlyStop = True
 
 
     def __setattr__(self, name, value):

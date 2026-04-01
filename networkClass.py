@@ -81,7 +81,7 @@ class Network(object):
 
     """
 
-    def backwardPropagation(self, X, Y, learningRate):
+    def backwardPropagation(self, X, Y):
         m = X.shape[1]
         L = self.nb_layers - 1
         dW = [0] * (L)
@@ -97,9 +97,20 @@ class Network(object):
                 dZ = dA_prev * self.ReLU_deriv(self.Z[i])
             dW[i] = (1 / m) * np.dot(dZ, A_prev.T)
             db[i] = (1 / m) * np.sum(dZ, axis=1, keepdims=True);
-        loss = -np.mean(np.sum(oneHot_Y * np.log(self.A[-1] + 1e-8), axis=0))
         return dW, db
     
+    """
+    Cross Entropy: 
+        - oneHot_Y * np.log(self.A[-1] + 1e-8) -> multiplication élément par élément
+        oneHot_Y contient surtout des 0 sauf 1 à la position de la vraie classe
+        👉  Donc ça revient à garder uniquement : log(proba de la bonne classe)
+        exemples:
+        oneHot_Y      = [0, 1, 0]
+        prediction    = [0.1, 0.7, 0.2]
+            → résultat = [0, log(0.7), 0]
+    """
+
+
     # m = X.len
     # Y = X.result
     # oneHot_Y = self.oneHot(Y)
