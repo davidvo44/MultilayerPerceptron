@@ -18,19 +18,19 @@ def main():
     predictCl : dataClass.Data = None
 
     try:
-        choice = mainMenu.menuData()
-        if choice == "Diagnostic Breast Cancer Data (project)":
-            dataset = "test.csv"
+        choiceDataset = mainMenu.menuData()
+        if choiceDataset == "Diagnostic Breast Cancer Data (project)":
+            dataset = "data.csv"
         else:
             dataset = "train.csv"
         data = pd.read_csv(dataset)
-        layer = mainMenu.menuLayer(data)
+        layer = mainMenu.menuLayer(data, choiceDataset)
         neuNetwork = networkClass.Network(layer)
         parameter = mainMenu.addParameter()
         while (1):
             choice = mainMenu.programChoice()
             if choice == "Separate the dataset":
-                predictCl, trainCl = separateData.SeparateData(data)
+                predictCl, trainCl = separateData.SeparateData(data, choiceDataset)
             elif choice == "Train program":
                 trainData.train(trainCl, predictCl, neuNetwork, parameter)
             elif choice == "Prediction program":

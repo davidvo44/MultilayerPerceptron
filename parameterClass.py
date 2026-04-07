@@ -7,6 +7,8 @@ class Parameter:
         self.epoch  = 500
         self.loss = "categorical Crossentropy"
         self.earlyStop = True
+        self.optimiser = "Standard"
+        
 
 
     def __setattr__(self, name, value):

@@ -19,10 +19,13 @@ def programChoice():
     ).execute()
 
 
-def menuLayer(dataset):
+def menuLayer(dataset, choice):
     dataset = np.array(dataset)
     _, n = dataset.shape # m = ligne, n = colonne
-    n -= 1; #input
+    if choice ==  "Diagnostic Breast Cancer Data (project)":
+        n -= 2
+    else:
+        n -= 1
     layerSize = click.prompt("\nNow, enter the number of Layer", type=int)
     time.sleep(1)
     layers = []
@@ -30,7 +33,10 @@ def menuLayer(dataset):
     for i in range(1, layerSize - 1):
         neuron = click.prompt(f"\nNeuron from Layer {i + 1}", type=int)
         layers.append(neuron)
-    n = 10; #output
+    if choice ==  "Diagnostic Breast Cancer Data (project)":
+        n = 2
+    else:
+        n = 10
     layers.append(n);
     return layers
 

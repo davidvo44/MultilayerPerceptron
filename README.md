@@ -79,3 +79,47 @@ Workflow Integration: You might be wondering, “How do these processes fit toge
 - Backpropagation (to Compute Gradients): Now, backpropagation kicks in. It starts at the output layer and works its way backward through the network, calculating the gradient of the loss with respect to each weight. This gradient is essentially a signal that tells each weight how much it contributed to the error.
 
 - Gradient Descent (to Update Weights): Finally, gradient descent steps in to adjust the weights. Using the gradients computed by backpropagation, it updates each weight in the network, nudging them in the direction that reduces the loss. This step is like the network learning from its mistakes, gradually improving its performance over time.
+
+## Adam
+
+Adam (Adaptive Moment Estimation) is a optimisation algorithm that builds upon the strenghts of AdaGrad and RMSProp.
+
+AdaGrad : Adaptive Gradiant adapt learning of each parameter by their historic
+result = result - n * (g / (G + e))
+
+g = actual gradiant
+G = sum of (past gr)^2
+e = const to prevent division by 0
+n = learning Rate
+
+Problem: if gradiant too big, or too small, can create problem
+
+
+
+
+RMSProp:
+Introduced to solve the AdaGrad problem. Instead of accumulating all past squared gradients as AdaGrad does, RMSProp uses a moving average.
+
+v(t) = B * v(t - 1) + (1 - B) * g^2
+
+v(t) = variance, accumulated moving average of squared gradients at time ttt
+B = decay rate, around 0.9 or 0.95
+gt = gradient at time ttt
+
+update:
+result = result - n * (g / (v(t) + e))
+
+
+ADam:
+Use m -> Mean of gradiant (direction)
+and v -> MS square of mean of gradiant ( speed)
+
+apply m and v on all weight and bias
+
+result = result - n * (momentum / (sqrt(variance) + e))
+
+mt = B1 * momentum + ( 1 - B1)* g
+vt = B2 * variance + (1 - B2) * g^2
+
+momentum = mt / (1 - B1 ** t)
+variance = vt / (1 - B2 ** t)

@@ -12,6 +12,11 @@ class Network(object):
         self.Z = []
         self.A = []
 
+        self.mW = [np.zeros_like(w) for w in self.weights]
+        self.mb = [np.zeros_like(b) for b in self.biaises]
+        self.vW = [np.zeros_like(w) for w in self.weights]
+        self.vb = [np.zeros_like(b) for b in self.biaises]
+
     def gradient_descent(epoch):
         for i in range(epoch):
             print("forward_prop")
@@ -40,7 +45,7 @@ class Network(object):
     """One Hot Encoding,  encode variable under number"""
 
     def oneHot(self, Y):
-        oneHot_Y = np.zeros((Y.size,10))
+        oneHot_Y = np.zeros((Y.size,self.sizes[-1]))
         oneHot_Y[np.arange(Y.size), Y] = 1
         oneHot_Y = oneHot_Y.T
         return oneHot_Y
@@ -152,3 +157,33 @@ class Network(object):
             self.biaises[i] -= learningRate * db[i]
             self.weights[i] -= learningRate * dW[i]
 
+
+    def updateAdam(self, dW, db, t, learningRate):
+        beta1 = 0.9
+        beta2 = 0.999
+        epsilon = 1e-8
+        t = t + 1
+        for i in range(len(self.weights)):
+            # Update biased first moment estimate.
+            # m is the exponentially moving average of the gradients.
+            # beta1 is the decay rate for the first moment.
+            self.mW[i] = beta1 * self.mW[i] + (1 - beta1) * dW[i]
+            self.mb[i] = beta1 * self.mb[i] + (1 - beta1) * db[i]
+
+            # Update biased second raw moment estimate.
+            # v is the exponentially moving average of the squared gradients.
+            # beta2 is the decay rate for the second moment.
+            self.vW[i] = beta2 * self.vW[i] + (1 - beta2) * (dW[i] ** 2)
+            self.vb[i] = beta2 * self.vb[i] + (1 - beta2) * (db[i] ** 2)
+
+            # Compute bias-corrected first moment estimate.
+            # This corrects the bias in the first moment caused by initialization at origin.
+            mW_hat = self.mW[i] / (1 - beta1 ** t)
+            mb_hat = self.mb[i] / (1 - beta1 ** t)
+
+            vW_hat = self.vW[i] / (1 - beta2 ** t)
+            vb_hat = self.vb[i] / (1 - beta2 ** t)
+
+            #Upgrade
+            self.biaises[i] -= learningRate * mb_hat / (np.sqrt(vb_hat) + epsilon)
+            self.weights[i] -= learningRate * mW_hat / (np.sqrt(vW_hat) + epsilon)
