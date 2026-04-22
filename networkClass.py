@@ -1,5 +1,7 @@
 import numpy as np
 import dataClass
+import copy
+
 
 class Network(object):
 
@@ -23,7 +25,9 @@ class Network(object):
             print("backward_prop")
             print("update_params")
             print("Epoch {i}")
-
+    
+    def copy(self):
+        return copy.deepcopy(self)
 
     def sigmoid(self, z):
         return 1.0/(1.0+np.exp(-z))
@@ -31,7 +35,7 @@ class Network(object):
     def ReLU(self, Z):
         return np.maximum(Z, 0)
     
-    def LeakyReLU(self, x):
+    def LeakyReLU_deriv(self, x):
         return np.where(x > 0, x, 0.01 * x)
 
     def ReLU_deriv(self, x): #detection neuronne actif sous forme bool
@@ -86,7 +90,7 @@ class Network(object):
 
     """
 
-    def backwardPropagation(self, X, Y):
+    def backwardPropagation(self, X, Y, parameter):
         m = X.shape[1]
         L = self.nb_layers - 1
         dW = [0] * (L)
@@ -96,7 +100,13 @@ class Network(object):
         for i in reversed(range(L)):
             A_prev = self.A[i]
             if (i == L - 1):
-                dZ = self.A[L] - oneHot_Y
+                if parameter.loss == "Standard":
+                    dZ = self.A[L] - oneHot_Y #Softmax and Cross Entropy
+                if parameter.loss == "Categorical Crossentropy":
+                    loss = -np.mean(np.sum(oneHot_Y * np.log(self.A[L] + 1e-8), axis=0))
+                    dA = - (oneHot_Y / (self.A[L] + 1e-8))
+                if parameter.loss == "Binary Crossentropy":
+                    dZ = self.A[L] - oneHot_Y
             else:
                 dA_prev = np.dot(self.weights[i + 1].T, dZ)
                 dZ = dA_prev * self.ReLU_deriv(self.Z[i])
@@ -108,47 +118,12 @@ class Network(object):
     Cross Entropy: 
         - oneHot_Y * np.log(self.A[-1] + 1e-8) -> multiplication élément par élément
         oneHot_Y contient surtout des 0 sauf 1 à la position de la vraie classe
-        👉  Donc ça revient à garder uniquement : log(proba de la bonne classe)
+          Donc ça revient à garder uniquement : log(proba de la bonne classe)
         exemples:
         oneHot_Y      = [0, 1, 0]
         prediction    = [0.1, 0.7, 0.2]
             → résultat = [0, log(0.7), 0]
     """
-
-
-    # m = X.len
-    # Y = X.result
-    # oneHot_Y = self.oneHot(Y)
-
-    # dW = [0] * (self.nb_layers - 1)
-    # db = [0] * (self.nb_layers - 1)
-
-    # dZ = self.A[-1] - oneHot_Y
-
-    # for i in reversed(range(self.nb_layers - 1)):
-
-    #     A_prev = self.A[i]
-
-    #     # gradients
-    #     dW[i] = (1 / m) * np.dot(dZ, A_prev.T)
-    #     db[i] = (1 / m) * np.sum(dZ, axis=1, keepdims=True)
-
-    #     # backprop vers couche précédente
-    #     if i > 0:
-    #         dA_prev = np.dot(self.weights[i].T, dZ)
-    #         dZ = dA_prev * self.ReLU_deriv(self.Z[i - 1])
-
-    # return dW, db
-
-    # one_hot_Y = one_hot(Y)
-    # dZ2 = A2 - one_hot_Y
-    # dW2 = 1 / m * dZ2.dot(A1.T)
-    # db2 = 1 / m * np.sum(dZ2)
-    # dZ1 = W2.T.dot(dZ2) * ReLU_deriv(Z1)
-    # dW1 = 1 / m * dZ1.dot(X.T)
-    # db1 = 1 / m * np.sum(dZ1)
-    # return dW1, db1, dW2, db2
-
 
 
     def update(self, dW, db, learningRate):

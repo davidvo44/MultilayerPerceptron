@@ -12,11 +12,11 @@ https://docs.pytorch.org/tutorials/beginner/blitz/neural_networks_tutorial.html
 
 ### Perceptrons
 
-Un type particuler de neuronne artificiel:
- Il prend plusieurs input et sort un seul output. Pour calculer output, on introduit le poid.( w1, w2, ...); Ce soint des nombre exprimant l'importance de ces inputs par rapport au output.
- Le resultat des neuronnes, soit 0 ou 1 est determine si la somme des poid exprime en  ∑j (wjxj) est moins ou pus que le seuil de resultat. If > seul = 1, else = 0
+A particular type of artificial neuron:
+It takes several inputs and produces a single output. To compute the output, we introduce weights (w₁, w₂, ...). These are numbers that represent the importance of each input with respect to the output.
+The result of the neuron, either 0 or 1, is determined by whether the weighted sum ∑ⱼ (wⱼxⱼ) is below or above a threshold. If it is greater than the threshold, the output is 1; otherwise, it is 0.
 
-Bien sur, le perceptrons a plusieurs layer, la premiere layer correspond souvent a l'input et la derniere est l'output. Mais entre ces layers peuvent contenir des layer cache. Et le nombre de ces couches augmente le niveau de decision en rendent plus complexe et abstrait.
+Of course, a perceptron can have multiple layers. The first layer usually corresponds to the input, and the last one is the output. Between these layers, there can be hidden layers. The number of these layers increases the level of decision-making by making it more complex and abstract.
 
 
 

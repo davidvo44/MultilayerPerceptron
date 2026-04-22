@@ -50,14 +50,15 @@ def programChoice():
 def menuParameter(parameter : parameterClass):
     return inquirer.select(
         message="\n\nparameter Information:\n" \
-        f"Learning Rate Format: {parameter.learningRateFormat}\n" \
         f"Learning Rate : {parameter.learningRate}\n" \
         f"Batch Size : {parameter.batchSize}\n" \
         f"Epoch : {parameter.epoch}\n" \
-        f"Loss Function: {parameter.loss}\n\n"  \
+        f"Loss Function: {parameter.loss}\n"  \
+        f"EarlyStop: {parameter.earlyStop}\n"  \
+        f"Optimiser: {parameter.optimiser}\n\n"  \
             "Select Parameter",
         
-        choices=["Learning Rate Format", "Batch Size", "Epoch", "Loss", "Done"]
+        choices=["Batch Size", "Epoch", "Loss", "Early Stop", "Optimiser", "Done"]
     ).execute()
 
 def newParam(param):
@@ -72,13 +73,30 @@ def addParameter():
     parameter = parameterClass.Parameter()
     while (1):
         choice = menuParameter(parameter)
-        if choice == "Learning Rate Format":
-           parameter.learningRateFormat = newParam("Format")
-        elif choice == "Batch Size":
+        if choice == "Batch Size":
            parameter.batchSize = newParam("batch")
         elif choice == "Epoch":
            parameter.epoch = newParam("epoch")
         elif choice == "Loss":
-           parameter.loss = newParam("Loss")
+           parameter.loss = newParamLoss()
+        elif choice == "Optimiser":
+           parameter.optimiser = newParamOpt()
+        elif choice == "Early Stop":
+           parameter.optimiser = newParamEarlyStop()
         elif choice == "Done":
             return parameter
+
+def newParamLoss():
+    return inquirer.select(
+        message="\n\nChoose the Loss Algorithm",
+        choices=["Categorical Crossentropy", "Binary Crossentropy"]
+    ).execute()
+
+def newParamOpt():
+    return inquirer.select(
+        message="\n\nChoose the Optimiser",
+        choices=["Standard", "Adam"]
+    ).execute()
+
+def newParamEarlyStop():
+    return inquirer.confirm(message="Activate Early Stop?").execute()
