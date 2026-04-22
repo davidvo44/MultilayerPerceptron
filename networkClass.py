@@ -66,7 +66,7 @@ class Network(object):
             Z = np.dot(self.weights[i], A) + self.biaises[i]
 
             if i < self.nb_layers - 2:
-                A = self.LeakyReLU(Z)
+                A = self.ReLU(Z)
             else:
                 A = self.softmax(Z)
 
@@ -140,6 +140,7 @@ class Network(object):
         t = t + 1
         for i in range(len(self.weights)):
             # Update biased first moment estimate.
+            
             # m is the exponentially moving average of the gradients.
             # beta1 is the decay rate for the first moment.
             self.mW[i] = beta1 * self.mW[i] + (1 - beta1) * dW[i]

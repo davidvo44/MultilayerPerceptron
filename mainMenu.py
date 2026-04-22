@@ -89,7 +89,7 @@ def addParameter():
 def newParamLoss():
     return inquirer.select(
         message="\n\nChoose the Loss Algorithm",
-        choices=["Categorical Crossentropy", "Binary Crossentropy"]
+        choices=["Standard","Categorical Crossentropy", "Binary Crossentropy"]
     ).execute()
 
 def newParamOpt():

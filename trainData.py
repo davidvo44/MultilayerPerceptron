@@ -9,13 +9,14 @@ import numpy as np
 counter = 0
 min_delta = 1e-3
 best_loss = float("inf")
-patience = 5
+patience = 10
 
 
 def train(trainCl, predictCl, NeuNetwork: networkClass, parameter: parameterClass):
 
     graph = graphClass.Graph()
     patience = 0
+    counter = 0
     if trainCl == None or predictCl == None:
         click.echo(click.style("\nData is not separated\n   Return...", fg='red'))
         time.sleep(1)
@@ -33,7 +34,7 @@ def train(trainCl, predictCl, NeuNetwork: networkClass, parameter: parameterClas
             X_batch =  trainCl.data[:, i:i+parameter.batchSize]
             Y_batch = trainCl.result[i:i+parameter.batchSize]
             NeuNetwork.forwardPropagation(X_batch)
-            dW, db = NeuNetwork.backwardPropagation(X_batch, Y_batch)
+            dW, db = NeuNetwork.backwardPropagation(X_batch, Y_batch, parameter)
             if parameter.optimiser == "Standard":
                 NeuNetwork.update(dW, db, parameter.learningRate)
             else:
