@@ -4,7 +4,7 @@ class Parameter:
         self.learningRate = 0.1
         self.batchSize = 20
         self.epoch  = 500
-        self.loss = "Categorical Crossentropy"
+        self.loss = "Standard"
         self.earlyStop = True
         self.optimiser = "Standard"
 

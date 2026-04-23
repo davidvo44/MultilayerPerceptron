@@ -14,8 +14,8 @@ class Network(object):
         self.Z = []
         self.A = []
 
-        self.mW = [np.zeros_like(w) for w in self.weights]
-        self.mb = [np.zeros_like(b) for b in self.biaises]
+        self.mW = [np.zeros_like(w) for w in self.weights] # a randomiser?
+        self.mb = [np.zeros_like(b) for b in self.biaises] # a randomiser?
         self.vW = [np.zeros_like(w) for w in self.weights]
         self.vb = [np.zeros_like(b) for b in self.biaises]
 
@@ -137,28 +137,35 @@ class Network(object):
         beta1 = 0.9
         beta2 = 0.999
         epsilon = 1e-8
-        t = t + 1
         for i in range(len(self.weights)):
-            # Update biased first moment estimate.
             
             # m is the exponentially moving average of the gradients.
             # beta1 is the decay rate for the first moment.
+
+            # Update the biased first moment estimate for parameter : 
+            #    - estimate of the mean (first moment) of gradients.
+            #   -  Calculated as an exponentially decaying average of past gradients.
+            # -Helps in estimating he direction of the gradient
             self.mW[i] = beta1 * self.mW[i] + (1 - beta1) * dW[i]
             self.mb[i] = beta1 * self.mb[i] + (1 - beta1) * db[i]
 
-            # Update biased second raw moment estimate.
             # v is the exponentially moving average of the squared gradients.
             # beta2 is the decay rate for the second moment.
+
+            # Update biased second raw moment estimate:
+            #   -It’s an estimate of the uncentered variance (second moment) of the gradients.
+            #   -Also calculated as an exponentially decaying average, but of squared gradients.  
+            # -Helps in adapting the learning rate for each parameter.
             self.vW[i] = beta2 * self.vW[i] + (1 - beta2) * (dW[i] ** 2)
             self.vb[i] = beta2 * self.vb[i] + (1 - beta2) * (db[i] ** 2)
 
             # Compute bias-corrected first moment estimate.
             # This corrects the bias in the first moment caused by initialization at origin.
-            mW_hat = self.mW[i] / (1 - beta1 ** t)
-            mb_hat = self.mb[i] / (1 - beta1 ** t)
+            mW_hat = self.mW[i] / (1 - beta1 ** (t + 1))
+            mb_hat = self.mb[i] / (1 - beta1 ** (t + 1))
 
-            vW_hat = self.vW[i] / (1 - beta2 ** t)
-            vb_hat = self.vb[i] / (1 - beta2 ** t)
+            vW_hat = self.vW[i] / (1 - beta2 ** (t + 1))
+            vb_hat = self.vb[i] / (1 - beta2 ** (t + 1))
 
             #Upgrade
             self.biaises[i] -= learningRate * mb_hat / (np.sqrt(vb_hat) + epsilon)
