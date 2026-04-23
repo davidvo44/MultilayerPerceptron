@@ -15,6 +15,7 @@ $(VENV)/bin/python: requirements.txt
 clean:
 	rm -rf __pycache__
 	rm -rf $(VENV)
+	rm -r pair_plots
 
 re : clean all
 

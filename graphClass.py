@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import networkClass
+import os
 
 class Graph(object):
 
@@ -58,3 +59,35 @@ class Graph(object):
         plt.legend()
         plt.savefig("AccuracyFigure.png")
         plt.close();
+
+    def drawPairPlot(self, data):
+        COLORS = {
+        "0": "green",
+        "1": "red",
+        }
+        os.makedirs('pair_plots', exist_ok=True)
+        len_data, len_feat = data.shape
+
+        y = data[:, 1]
+        X = data[:, 2:]
+        return
+        n_feat = X.shape[1]
+        fig, axes = plt.subplots(len_feat,len_feat, figsize=(3 * len_feat,3 * len_feat))
+
+        for i in range(len_feat):
+            for j in range(len_feat):
+                ax = axes[i, j]
+                if j > i:
+                    ax.set_axis_off()
+                    continue
+                # elif i == j:
+                #     for label in np.unique(y):
+                #     ax.hist(, bins = 15, color= COLORS, edgecolor= 'black')
+                else:
+                    ax.scatter(data[:, j], data[:, i], alpha =0.7, s=10, color='blue')
+                    ax.set_xticks([])
+                    ax.set_yticks([])
+        plt.tight_layout()
+        plt.savefig(f'pair_plots/pair_plot.png')
+        plt.close()
+

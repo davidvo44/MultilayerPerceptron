@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import dataClass
+import graphClass
 
 
 def SeparateData(data, choice):
@@ -42,10 +43,13 @@ def SeparateDataMNIST(data: pd):
 
     
 def SeparateDataWDBC(data: pd):
+    graph = graphClass.Graph()
     data = data.sample(frac=1).reset_index(drop=True)
-    data = np.array(data)
     lenData, lenFeat = data.shape
     mapping = {'M': 1, 'B': 0}
+    data.iloc[:, 1] = data.iloc[:, 1].map(mapping)
+    data = np.array(data)
+    graph.drawPairPlot(data)
 
 
     data_predict = data[0:int(lenData / 2)].T

@@ -163,7 +163,6 @@ class Network(object):
             # This corrects the bias in the first moment caused by initialization at origin.
             mW_hat = self.mW[i] / (1 - beta1 ** (t + 1))
             mb_hat = self.mb[i] / (1 - beta1 ** (t + 1))
-
             vW_hat = self.vW[i] / (1 - beta2 ** (t + 1))
             vb_hat = self.vb[i] / (1 - beta2 ** (t + 1))
 
