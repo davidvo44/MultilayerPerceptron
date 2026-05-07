@@ -3,6 +3,10 @@ import numpy as np
 import dataClass
 import graphClass
 
+'''
+Clean Database:
+    Remove Missing Val
+'''
 
 def SeparateData(data, choice):
     if choice == "Diagnostic Breast Cancer Data (project)":
@@ -54,8 +58,7 @@ def SeparateDataWDBC(data: pd):
 
     data_predict = data[0:int(lenData / 2)].T
     iD_predict = data_predict[0]
-    labels = data_predict[1]
-    Y_predict = np.vectorize(mapping.get)(labels)
+    Y_predict = data_predict[1].astype(int)
     X_predict = data_predict[2:lenFeat]
     X_predict = normalize(X_predict, lenFeat)
     X_predict = X_predict.astype(float)
@@ -64,8 +67,7 @@ def SeparateDataWDBC(data: pd):
 
     data_train = data[int(lenData / 2): lenData].T
     iD_train = data_train[0]
-    labels = data_train[1]
-    Y_train = np.vectorize(mapping.get)(labels)
+    Y_train = data_train[1].astype(int)
     X_train = data_train[2:lenFeat]
     X_train = normalize(X_train, lenFeat)
     X_train = X_train.astype(float)

@@ -70,12 +70,12 @@ class Graph(object):
 
         y = data[:, 1]
         X = data[:, 2:]
-        return
         n_feat = X.shape[1]
         fig, axes = plt.subplots(len_feat,len_feat, figsize=(3 * len_feat,3 * len_feat))
 
         for i in range(len_feat):
             for j in range(len_feat):
+                print(i, j)
                 ax = axes[i, j]
                 if j > i:
                     ax.set_axis_off()

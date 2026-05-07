@@ -50,7 +50,7 @@ def train(trainCl, predictCl, NeuNetwork: networkClass, parameter: parameterClas
 
 def earlyStop(loss, epochI):
     global best_loss, counter
-    if best_loss - loss > 0:
+    if best_loss - loss > 0.01:
         best_loss = loss
         counter = 0
     else:

@@ -58,12 +58,12 @@ def menuParameter(parameter : parameterClass):
         f"Optimiser: {parameter.optimiser}\n\n"  \
             "Select Parameter",
         
-        choices=["Batch Size", "Epoch", "Loss", "Early Stop", "Optimiser", "Done"]
+        choices=["Learning Rate", "Batch Size", "Epoch", "Loss", "Early Stop", "Optimiser", "Done"]
     ).execute()
 
 def newParam(param):
-    if param == "Format" or param == "Loss":
-        newChange = click.prompt(f"\nNew data for {param}", type=str)
+    if param == "Learning Rate":
+        newChange = click.prompt(f"\nNew data for {param}", type=float)
     else:
         newChange = click.prompt(f"\nNew data for {param}", type=int)
     return newChange
@@ -75,6 +75,8 @@ def addParameter():
         choice = menuParameter(parameter)
         if choice == "Batch Size":
            parameter.batchSize = newParam("batch")
+        if choice == "Learning Rate":
+           parameter.learningRate = newParam("Learning Rate")
         elif choice == "Epoch":
            parameter.epoch = newParam("epoch")
         elif choice == "Loss":
