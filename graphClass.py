@@ -97,13 +97,20 @@ class Graph(object):
               "Smoothness", "Compactness", "Concavity", "ConcavePts", "symmetry", "FractalDim"]
         dataSuffName = ["Mean", "STD", "Worst"]
         dataName = []
-        dataGraph = 
+        dataGraph = data.iloc[:, 2:]
         for i in dataSuffName:
             for j in dataPreName:
-                dataName.append(j + i)
+                dataName.append(j + "_" + i)
         corr = data.corr(numeric_only=True)
         os.makedirs('pair_plots', exist_ok=True)
         plt.figure(figsize=(16,12))
-        sns.heatmap(corr, cmap="coolwarm")
+        sns.heatmap(
+            corr,
+            cmap="coolwarm",
+            xticklabels=dataName,
+            yticklabels=dataName
+        )
+        plt.title("Correlation heatmap")
+        plt.tight_layout()
         plt.savefig(f'pair_plots/pair_plot.png')
         plt.close()
