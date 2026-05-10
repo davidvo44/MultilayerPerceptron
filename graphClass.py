@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import networkClass
 import os
-
+import seaborn as sns
 class Graph(object):
 
     def __init__(self):
@@ -91,3 +91,19 @@ class Graph(object):
         plt.savefig(f'pair_plots/pair_plot.png')
         plt.close()
 
+    
+    def drawHeatMap(self, data):
+        dataPreName = ["Radius", "Texture", "Perimeter", "Area",
+              "Smoothness", "Compactness", "Concavity", "ConcavePts", "symmetry", "FractalDim"]
+        dataSuffName = ["Mean", "STD", "Worst"]
+        dataName = []
+        dataGraph = 
+        for i in dataSuffName:
+            for j in dataPreName:
+                dataName.append(j + i)
+        corr = data.corr(numeric_only=True)
+        os.makedirs('pair_plots', exist_ok=True)
+        plt.figure(figsize=(16,12))
+        sns.heatmap(corr, cmap="coolwarm")
+        plt.savefig(f'pair_plots/pair_plot.png')
+        plt.close()

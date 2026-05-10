@@ -48,12 +48,12 @@ def SeparateDataMNIST(data: pd):
     
 def SeparateDataWDBC(data: pd):
     graph = graphClass.Graph()
+    graph.drawHeatMap(data)
     data = data.sample(frac=1).reset_index(drop=True)
     lenData, lenFeat = data.shape
     mapping = {'M': 1, 'B': 0}
     data.iloc[:, 1] = data.iloc[:, 1].map(mapping)
     data = np.array(data)
-    graph.drawPairPlot(data)
 
 
     data_predict = data[0:int(lenData / 2)].T
