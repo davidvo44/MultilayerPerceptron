@@ -1,11 +1,11 @@
 import numpy as np
-import dataClass
 import copy
+from BCEClass import BinaryCrossEntropy
 
 
 class Network(object):
 
-    def __init__(self, sizes):
+    def __init__(self, sizes, loss):
         self.nb_layers = len(sizes)
         self.sizes = sizes
         self.biaises = [np.zeros((y, 1)) for y in sizes[1:]]
@@ -13,6 +13,9 @@ class Network(object):
                     for x, y in zip(sizes[:-1], sizes[1:])]
         self.Z = []
         self.A = []
+
+        if loss == "Binary Crossentropy":
+            self.loss = BinaryCrossEntropy()
 
         self.mW = [np.zeros_like(w) for w in self.weights] # a randomiser?
         self.mb = [np.zeros_like(b) for b in self.biaises] # a randomiser?
@@ -91,14 +94,20 @@ class Network(object):
     """
 
     def backwardPropagation(self, X, Y, parameter):
+
         m = X.shape[1]
+
         L = self.nb_layers - 1
+
         dW = [0] * (L)
         db = [0] * (L)
         dZ = 0
         oneHot_Y = self.oneHot(Y)
+
         for i in reversed(range(L)):
+
             A_prev = self.A[i]
+            
             if (i == L - 1):
                 if parameter.loss == "Standard":
                     dZ = self.A[L] - oneHot_Y #Softmax and Cross Entropy

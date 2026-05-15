@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import networkClass
 import os
 import seaborn as sns
+
+
 class Graph(object):
 
     def __init__(self):
@@ -104,9 +106,11 @@ class Graph(object):
         corr = data.corr(numeric_only=True)
         os.makedirs('pair_plots', exist_ok=True)
         plt.figure(figsize=(16,12))
+        mask = np.triu(np.ones_like(corr, dtype=bool))
         sns.heatmap(
             corr,
             cmap="coolwarm",
+            mask=mask,
             xticklabels=dataName,
             yticklabels=dataName
         )
