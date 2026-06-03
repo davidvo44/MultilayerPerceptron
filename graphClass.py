@@ -104,10 +104,12 @@ class Graph(object):
                 dataName.append(j + "_" + i)
         corr = data.corr(numeric_only=True)
         os.makedirs('pair_plots', exist_ok=True)
-        plt.figure(figsize=(16, 12))
+        plt.figure(figsize=(16,12))
+        mask = np.triu(np.ones_like(corr, dtype=bool))
         sns.heatmap(
             corr,
             cmap="coolwarm",
+            mask=mask,
             xticklabels=dataName,
             yticklabels=dataName
         )

@@ -25,9 +25,9 @@ def main():
         else:
             dataset = "train.csv"
         data = pd.read_csv(dataset)
-        layer = mainMenu.menuLayer(data, choiceData)
-        neuNetwork = networkClass.Network(layer)
+        layer = mainMenu.menuLayer(data, choiceDataset)
         parameter = mainMenu.addParameter()
+        neuNetwork = networkClass.Network(layer, parameter.loss)
         while (1):
             choice = mainMenu.programChoice()
             if choice == "Separate the dataset":
