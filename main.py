@@ -8,33 +8,35 @@ import dataClass
 import trainData
 import predictData
 
+
 def main():
     print("\nWelcome to Multilayer Perceptron project")
     time.sleep(1)
     print("Before the train start, we need to get some information")
     time.sleep(1)
 
-    trainCl : dataClass.Data = None
-    predictCl : dataClass.Data = None
+    trainCl: dataClass.Data = None
+    predictCl: dataClass.Data = None
 
     try:
-        choiceDataset = mainMenu.menuData()
-        if choiceDataset == "Diagnostic Breast Cancer Data (project)":
+        choiceData = mainMenu.menuData()
+        if choiceData == "Diagnostic Breast Cancer Data (project)":
             dataset = "data.csv"
         else:
             dataset = "train.csv"
         data = pd.read_csv(dataset)
-        layer = mainMenu.menuLayer(data, choiceDataset)
+        layer = mainMenu.menuLayer(data, choiceData)
         neuNetwork = networkClass.Network(layer)
         parameter = mainMenu.addParameter()
         while (1):
             choice = mainMenu.programChoice()
             if choice == "Separate the dataset":
-                predictCl, trainCl = separateData.SeparateData(data, choiceDataset)
+                predictCl, trainCl = separateData.SeparateData(data,
+                                                               choiceData)
             elif choice == "Train program":
                 trainData.train(trainCl, predictCl, neuNetwork, parameter)
             elif choice == "Prediction program":
-                predictData.predict(predictCl,neuNetwork)
+                predictData.predict(predictCl, neuNetwork)
             else:
                 return
         # layerSize, layers = mainMenu.menuLayer()

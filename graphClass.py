@@ -3,6 +3,8 @@ import matplotlib.pyplot as plt
 import networkClass
 import os
 import seaborn as sns
+
+
 class Graph(object):
 
     def __init__(self):
@@ -13,7 +15,6 @@ class Graph(object):
     
     def __setattr__(self, name, value):
         self.__dict__[name] = value
-
 
     def __getattr__(self, item):
         return (self.__dict__[item])
@@ -33,12 +34,10 @@ class Graph(object):
         self.accTrain.append(accuracy)
         self.accPredict.append(accuracyPredict)
 
-
     def drawCurve(self):
 
         self.drawLoss()
         self.drawAccuracy()
-
 
     def drawLoss(self):
         plt.plot(self.lossTrain, label="Training Loss")
@@ -58,7 +57,7 @@ class Graph(object):
         plt.ylabel("acuracy")
         plt.legend()
         plt.savefig("AccuracyFigure.png")
-        plt.close();
+        plt.close()
 
     def drawPairPlot(self, data):
         COLORS = {
@@ -71,7 +70,8 @@ class Graph(object):
         y = data[:, 1]
         X = data[:, 2:]
         n_feat = X.shape[1]
-        fig, axes = plt.subplots(len_feat,len_feat, figsize=(3 * len_feat,3 * len_feat))
+        fig, axes = plt.subplots(len_feat, len_feat,
+                                 figsize=(3 * len_feat, 3 * len_feat))
 
         for i in range(len_feat):
             for j in range(len_feat):
@@ -84,17 +84,18 @@ class Graph(object):
                 #     for label in np.unique(y):
                 #     ax.hist(, bins = 15, color= COLORS, edgecolor= 'black')
                 else:
-                    ax.scatter(data[:, j], data[:, i], alpha =0.7, s=10, color='blue')
+                    ax.scatter(data[:, j], data[:, i], alpha=0.7,
+                               s=10, color='blue')
                     ax.set_xticks([])
                     ax.set_yticks([])
         plt.tight_layout()
         plt.savefig(f'pair_plots/pair_plot.png')
         plt.close()
-
-    
+  
     def drawHeatMap(self, data):
         dataPreName = ["Radius", "Texture", "Perimeter", "Area",
-              "Smoothness", "Compactness", "Concavity", "ConcavePts", "symmetry", "FractalDim"]
+                       "Smoothness", "Compactness", "Concavity", "ConcavePts",
+                       "symmetry", "FractalDim"]
         dataSuffName = ["Mean", "STD", "Worst"]
         dataName = []
         dataGraph = data.iloc[:, 2:]
@@ -103,7 +104,7 @@ class Graph(object):
                 dataName.append(j + "_" + i)
         corr = data.corr(numeric_only=True)
         os.makedirs('pair_plots', exist_ok=True)
-        plt.figure(figsize=(16,12))
+        plt.figure(figsize=(16, 12))
         sns.heatmap(
             corr,
             cmap="coolwarm",

@@ -1,5 +1,4 @@
 import numpy as np
-import dataClass
 import copy
 
 
@@ -10,7 +9,7 @@ class Network(object):
         self.sizes = sizes
         self.biaises = [np.zeros((y, 1)) for y in sizes[1:]]
         self.weights = [np.random.randn(y, x) * np.sqrt(2 / x)
-                    for x, y in zip(sizes[:-1], sizes[1:])]
+                        for x, y in zip(sizes[:-1], sizes[1:])]
         self.Z = []
         self.A = []
 
@@ -49,7 +48,7 @@ class Network(object):
     """One Hot Encoding,  encode variable under number"""
 
     def oneHot(self, Y):
-        oneHot_Y = np.zeros((Y.size,self.sizes[-1]))
+        oneHot_Y = np.zeros((Y.size, self.sizes[-1]))
         oneHot_Y[np.arange(Y.size), Y] = 1
         oneHot_Y = oneHot_Y.T
         return oneHot_Y
@@ -79,9 +78,9 @@ class Network(object):
             A[2] =  Transfo avec ReLU situe en couche Hidden2
             A[3] = Resultat Final Utilise avec SoftMax
 
-            Z[0] = Resultat Regression Lineaire avec Data * W[0] + B[1] -> Hidden Layer 1
-            Z[1] = Resultat Regression Lineaire avec A[1] * W[1] + B[1] -> Hidden Layer 2
-            Z[2] = Resultat Regression Lineaire avec A[2] * W[2] + B[2] -> Final Layer
+            Z[0] =  Regression Lineaire  Data * W[0] + B[1] -> Hidden Layer 1
+            Z[1] =  Regression Lineaire  A[1] * W[1] + B[1] -> Hidden Layer 2
+            Z[2] =  Regression Lineaire  A[2] * W[2] + B[2] -> Final Layer
 
         Weight = 3;
         Biais = 3;
@@ -101,9 +100,10 @@ class Network(object):
             A_prev = self.A[i]
             if (i == L - 1):
                 if parameter.loss == "Standard":
-                    dZ = self.A[L] - oneHot_Y #Softmax and Cross Entropy
+                    dZ = self.A[L] - oneHot_Y  # Softmax and Cross Entropy
                 if parameter.loss == "Categorical Crossentropy":
-                    loss = -np.mean(np.sum(oneHot_Y * np.log(self.A[L] + 1e-8), axis=0))
+                    loss = -np.mean(np.sum(oneHot_Y * np.log(self.A[L] + 1e-8),
+                                           axis=0))
                     dA = - (oneHot_Y / (self.A[L] + 1e-8))
                 if parameter.loss == "Binary Crossentropy":
                     dZ = self.A[L] - oneHot_Y
@@ -111,12 +111,12 @@ class Network(object):
                 dA_prev = np.dot(self.weights[i + 1].T, dZ)
                 dZ = dA_prev * self.ReLU_deriv(self.Z[i])
             dW[i] = (1 / m) * np.dot(dZ, A_prev.T)
-            db[i] = (1 / m) * np.sum(dZ, axis=1, keepdims=True);
+            db[i] = (1 / m) * np.sum(dZ, axis=1, keepdims=True)
         return dW, db
     
     """
-    Cross Entropy: 
-        - oneHot_Y * np.log(self.A[-1] + 1e-8) -> multiplication élément par élément
+    Cross Entropy:
+        -oneHot_Y * np.log(self.A[-1] + 1e-8) -> multiplication élém par élém
         oneHot_Y contient surtout des 0 sauf 1 à la position de la vraie classe
           Donc ça revient à garder uniquement : log(proba de la bonne classe)
         exemples:
@@ -125,13 +125,11 @@ class Network(object):
             → résultat = [0, log(0.7), 0]
     """
 
-
     def update(self, dW, db, learningRate):
 
         for i in range(len(self.biaises)):
             self.biaises[i] -= learningRate * db[i]
             self.weights[i] -= learningRate * dW[i]
-
 
     def updateAdam(self, dW, db, t, learningRate):
         beta1 = 0.9
@@ -142,9 +140,9 @@ class Network(object):
             # m is the exponentially moving average of the gradients.
             # beta1 is the decay rate for the first moment.
 
-            # Update the biased first moment estimate for parameter : 
+            # Update the biased first moment estimate for parameter :
             #    - estimate of the mean (first moment) of gradients.
-            #   -  Calculated as an exponentially decaying average of past gradients.
+            #   -  Calculated exponentially decaying average of past gradients.
             # -Helps in estimating he direction of the gradient
             self.mW[i] = beta1 * self.mW[i] + (1 - beta1) * dW[i]
             self.mb[i] = beta1 * self.mb[i] + (1 - beta1) * db[i]
@@ -154,7 +152,7 @@ class Network(object):
 
             # Update biased second raw moment estimate:
             #   -It’s an estimate of the uncentered variance (second moment) of the gradients.
-            #   -Also calculated as an exponentially decaying average, but of squared gradients.  
+            #   -Also calculated as an exponentially decaying average, but of squared gradients.
             # -Helps in adapting the learning rate for each parameter.
             self.vW[i] = beta2 * self.vW[i] + (1 - beta2) * (dW[i] ** 2)
             self.vb[i] = beta2 * self.vb[i] + (1 - beta2) * (db[i] ** 2)
@@ -166,6 +164,9 @@ class Network(object):
             vW_hat = self.vW[i] / (1 - beta2 ** (t + 1))
             vb_hat = self.vb[i] / (1 - beta2 ** (t + 1))
 
-            #Upgrade
-            self.biaises[i] -= learningRate * mb_hat / (np.sqrt(vb_hat) + epsilon)
-            self.weights[i] -= learningRate * mW_hat / (np.sqrt(vW_hat) + epsilon)
+            # Upgrade
+            self.biaises[i] -= learningRate * mb_hat / (np.sqrt(vb_hat)
+                                                        + epsilon)
+            self.weights[i] -= learningRate * mW_hat / (np.sqrt(vW_hat)
+                                                        + epsilon)
+            

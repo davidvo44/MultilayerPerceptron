@@ -1,5 +1,7 @@
 import networkClass
 import numpy as np
+
+
 def predict(predictCl, NeuNetwork: networkClass):
     np.set_printoptions(threshold=np.inf)
     NeuNetwork.forwardPropagation(predictCl.data)
@@ -17,11 +19,11 @@ def predict(predictCl, NeuNetwork: networkClass):
         predictions.append(predicNbr)
         probability.append(proba)
     precision = 0
-    for i in range (len(predictions)):
-        print (f"{predictions[i]}, {probability[i] *100:.2f}%, , {predictCl.result[i]}")
+    for i in range(len(predictions)):
+        print(f"{predictions[i]}, {probability[i] *100:.2f}%, ,{predictCl.result[i]}")
         if predictions[i] == predictCl.result[i]:
             precision += 1
     precision = precision / (len(predictions))
-    print (f"Precision is : {precision * 100:.2f}%")
+    print(f"Precision is : {precision * 100:.2f}%")
 
     

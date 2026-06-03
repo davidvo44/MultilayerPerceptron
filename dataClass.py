@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class Data(object):
 
     def __init__(self, len, data, result):
@@ -14,7 +15,7 @@ class Data(object):
         return self.result
     
     def resetEpoch(self):
-        perm = np.random.permutation(self.data.shape[1])  # génère un ordre aléatoire
+        perm = np.random.permutation(self.data.shape[1])
         X_data_shuffled = self.data[:, perm]
         Y_data_shuffled = self.result[perm]
         self.data = X_data_shuffled
